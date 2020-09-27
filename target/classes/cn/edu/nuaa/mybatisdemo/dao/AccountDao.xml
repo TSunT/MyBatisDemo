@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.nuaa.mybatisdemo.dao.AccountDao">
+<!--    多表的链接的结果映射，在account类中有个user属性，mybatis会根据此映射来将其封装经来-->
+    <resultMap id="accountUserMap" type="account">
+        <id property="id" column="aid"></id>
+        <result property="money" column="MONEY"></result>
+        <result property="uid" column="UID"></result>
+<!--        一对一映射关系:延迟查询
+            javatype:表示指定java类
+            select:表示查询用户的唯一标识方法，并确保相关映射是否可用
+            column:用户根据id查询时所需要的参数的值
+            延迟加载的的要点：除了在resultmap中绑定关联，还要在config.xml中设置
+                <settings>
+                    <setting name="lazyLoadingEnabled" value="true"/>
+                    <setting name="aggressiveLazyLoading" value="false"/>
+                </settings>来开启mybatis全局延迟加载-->
+        <association property="user" column="uid" javaType="User" select="cn.edu.nuaa.mybatisdemo.dao.UserDao.findUserById"></association>
+    </resultMap>
+    <select id="findAllDelay" resultMap="accountUserMap">
+        select * from account;
+    </select>
+
+    <select id="findAccountByUid" parameterType="int" resultType="account">
+        select * from account where uid = #{uid};
+    </select>
+</mapper>

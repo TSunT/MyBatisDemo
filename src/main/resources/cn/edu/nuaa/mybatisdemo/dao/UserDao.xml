@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.nuaa.mybatisdemo.dao.UserDao">
+    <resultMap id="userAccountMap" type="user">
+        <id property="id" column="id"></id>
+        <result property="username" column="username"></result>
+        <result property="birthday" column="birthday"></result>
+        <result property="sex" column="sex"></result>
+        <result property="address" column="address"></result>
+<!--        配置user中的account集合的映射,指定查询条件来延迟查询-->
+        <collection property="accountList" column="id" ofType="account" select="cn.edu.nuaa.mybatisdemo.dao.AccountDao.findAccountByUid"></collection>
+    </resultMap>
+    <select id="findAll"  resultMap="userAccountMap">
+        select * from user u left outer join account a on a.uid = u.id
+    </select>
+    <insert id="insertUser" parameterType="User" >
+        <selectKey resultType="int" keyColumn="id" keyProperty="id" order="AFTER">
+            select last_insert_id();
+        </selectKey>
+        insert into user (username,birthday,sex,address) values (#{username},#{birthday},#{sex},#{address});
+    </insert>
+    <update id="updateUser" parameterType="User" >
+        update user set username=#{username},birthday=#{birthday},sex=#{sex},address=#{address} where id = #{id}
+    </update>
+    <delete id="deleteUser" parameterType="int">
+        delete from user where id= #{id};
+    </delete>
+
+    <select id="findUserByCondition" parameterType="user" resultType="user">
+        select * from user where 1=1
+        <if test="username != null"><!--判断传入的对象的username是否是空值-->
+        and username = #{username}
+        </if>
+    </select>
+
+    <select id="findUserById" parameterType="int" resultType="user">
+        select * from user where id = #{id};
+    </select>
+
+    <select id="findUserByRangeId" parameterType="list" resultType="user">
+        select * from user
+        <where>
+            <if test="list!=null and list.size()>0">
+                <foreach collection="list" open="and id in (" close=")" item="id" separator=",">
+                    <!-- 传递一个 List 实例或者数组作为参数对象传给 MyBatis,MyBatis 会自动将它包装在一个 Map 中,
+                    用名称在作为键。List 实例将会以“list” 作为键,而数组实例将会以“array”作为键-->
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>
