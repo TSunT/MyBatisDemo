@@ -19,6 +19,7 @@ public interface AccountDaoAnnotation {
 
     /**
      * 查询所有账户的用户信息
+     * 一对一关系
      * @return
      */
     @Select("select * from account")

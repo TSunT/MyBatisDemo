@@ -37,6 +37,12 @@ public interface UserDaoAnnotation {
     @Select("select * from user where id = #{id}")
     public User findUserById(int id);
 
+    /**
+     * 查询一个用户所有账户信息
+     * 一对多关系
+     * @param id
+     * @return
+     */
     @Select("select * from user where id = #{id}")
     @Results(id = "userAccountMap",value = {
             @Result(id = true, property = "id" ,column = "id"),

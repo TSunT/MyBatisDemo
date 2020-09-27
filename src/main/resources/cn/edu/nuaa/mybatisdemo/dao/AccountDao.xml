@@ -16,7 +16,8 @@
                 <settings>
                     <setting name="lazyLoadingEnabled" value="true"/>
                     <setting name="aggressiveLazyLoading" value="false"/>
-                </settings>来开启mybatis全局延迟加载-->
+                </settings>来开启mybatis全局延迟加载
+-->
         <association property="user" column="uid" javaType="User" select="cn.edu.nuaa.mybatisdemo.dao.UserDao.findUserById"></association>
     </resultMap>
     <select id="findAllDelay" resultMap="accountUserMap">
